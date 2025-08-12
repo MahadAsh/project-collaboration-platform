@@ -43,7 +43,7 @@ function Header() {
           <div className="flex items-center">
             <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-46 lg:h-46 pt-2">
               <img
-                src="public/Black_and_White_Minimal_Modern_Bold_Beauty_Logo__1_-removebg-preview.svg"
+                src="/logo.svg"
                 alt="Logo"
                 className="w-full h-auto"
               />

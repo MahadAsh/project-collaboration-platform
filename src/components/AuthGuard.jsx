@@ -16,14 +16,14 @@ function AuthGuard({ children }) {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col pt-6 sm:px-6 lg:px-4 ">
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-start pt-16 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex items-center justify-center">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-extrabold text-gray-900">
               Welcome to
             </h2>
             <img
-              src="public/Black_and_White_Minimal_Modern_Bold_Beauty_Logo__1_-removebg-preview.svg"
+              src="/logo.svg"
               alt="Logo"
               className="w-[25vw] pt-4 h-auto min-w-28 sm:w-[20vw] md:w-[18vw] lg:w-[15vw]"
             />
