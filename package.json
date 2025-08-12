@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://mahadashraf.github.io/project-collaboration-platform",
+  "homepage": "https://MahadAsh.github.io/project-collaboration-platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
