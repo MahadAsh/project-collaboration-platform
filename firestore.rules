@@ -7,12 +7,23 @@ service cloud.firestore {
       allow read: if request.auth != null;
       
       // Only authenticated users can create projects
+      // Check the request data, not the resource data (which doesn't exist yet)
       allow create: if request.auth != null 
-        && request.auth.token.email == resource.data.authorEmail;
+        && request.auth.token.email == request.resource.data.authorEmail;
       
-      // Only project author can update their own project
+      // Allow updates for:
+      // 1. Project author updating their own project (full access)
+      // 2. Any authenticated user to update joinRequests (for joining projects)
       allow update: if request.auth != null 
-        && request.auth.token.email == resource.data.authorEmail;
+        && (
+          request.auth.token.email == resource.data.authorEmail ||
+          // Allow updates that only modify joinRequests array
+          (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['joinRequests']) &&
+            // Ensure all existing joinRequests are preserved
+            request.resource.data.joinRequests.hasAll(resource.data.joinRequests)
+          )
+        );
       
       // Only project author can delete their own project
       allow delete: if request.auth != null 
