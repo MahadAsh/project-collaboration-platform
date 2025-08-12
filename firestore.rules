@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Projects collection rules
+    match /projects/{projectId} {
+      // Anyone authenticated can read projects
+      allow read: if request.auth != null;
+      
+      // Only authenticated users can create projects
+      allow create: if request.auth != null 
+        && request.auth.token.email == resource.data.authorEmail;
+      
+      // Only project author can update their own project
+      allow update: if request.auth != null 
+        && request.auth.token.email == resource.data.authorEmail;
+      
+      // Only project author can delete their own project
+      allow delete: if request.auth != null 
+        && request.auth.token.email == resource.data.authorEmail;
+    }
+    
+    // Users collection (for future use)
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null 
+        && request.auth.uid == userId;
+      
+      // Users can create/update their own profile
+      allow write: if request.auth != null 
+        && request.auth.uid == userId;
+    }
+  }
+} 
