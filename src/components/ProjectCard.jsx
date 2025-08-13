@@ -110,7 +110,7 @@ function ProjectCard({ project, onJoinProject }) {
           </div>
         </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col md:flex-row ml-10 items-center space-y-2 md:space-y-0 md:space-x-2">
           {project.joinRequests && project.joinRequests.length > 0 && (
             <span className="text-sm text-gray-500">
               {project.joinRequests.length} interested
