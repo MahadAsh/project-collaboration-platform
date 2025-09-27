@@ -25,9 +25,14 @@ service cloud.firestore {
           )
         );
       
-      // Only project author can delete their own project
+      // Allow deletion for:
+      // 1. Project author deleting their own project
+      // 2. Admin user (mahad8ash@gmail.com) deleting any project
       allow delete: if request.auth != null 
-        && request.auth.token.email == resource.data.authorEmail;
+        && (
+          request.auth.token.email == resource.data.authorEmail ||
+          request.auth.token.email == 'mahad8ash@gmail.com'
+        );
     }
     
     // Users collection (for future use)
