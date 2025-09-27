@@ -9,7 +9,7 @@ function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Admin email - same as in ProjectCard
-  const ADMIN_EMAIL = 'mahadashraf@gmail.com'; // Change this to your Gmail
+  const ADMIN_EMAIL = 'mahad8ash@gmail.com'; // Change this to your Gmail
   const isAdmin = currentUser?.email === ADMIN_EMAIL;
 
   const handleSignIn = async () => {
