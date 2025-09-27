@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../contexts/AuthContext";
-import { LogIn, LogOut, Menu, X } from "lucide-react";
+import { LogIn, LogOut, Menu, X, Shield } from "lucide-react";
 import NotificationSystem from "./NotificationSystem";
 
 function Header() {
   const { currentUser, signInWithGoogle, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Admin email - same as in ProjectCard
+  const ADMIN_EMAIL = 'mahadashraf@gmail.com'; // Change this to your Gmail
+  const isAdmin = currentUser?.email === ADMIN_EMAIL;
 
   const handleSignIn = async () => {
     try {
@@ -61,9 +65,17 @@ function Header() {
                     alt={currentUser.displayName}
                     className="h-8 w-8 rounded-full"
                   />
-                  <span className="text-sm font-medium text-gray-700">
-                    {currentUser.displayName}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      {currentUser.displayName}
+                    </span>
+                    {isAdmin && (
+                      <div className="flex items-center space-x-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs">
+                        <Shield className="h-3 w-3" />
+                        <span>Admin</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <Button
                   onClick={handleSignOut}
@@ -124,10 +136,18 @@ function Header() {
                       alt={currentUser.displayName}
                       className="h-10 w-10 rounded-full"
                     />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {currentUser.displayName}
-                      </p>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          {currentUser.displayName}
+                        </p>
+                        {isAdmin && (
+                          <div className="flex items-center space-x-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs">
+                            <Shield className="h-3 w-3" />
+                            <span>Admin</span>
+                          </div>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">
                         {currentUser.email}
                       </p>

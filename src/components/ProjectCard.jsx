@@ -4,10 +4,13 @@ import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { Clock, Mail, User, Bell, Trash2 } from 'lucide-react';
+import { Clock, Mail, User, Bell, Trash2, Shield } from 'lucide-react';
 
 function ProjectCard({ project, onJoinProject }) {
   const { currentUser } = useAuth();
+  
+  // Admin email - replace with your actual Gmail
+  const ADMIN_EMAIL = 'mahad8ash@gmail.com'; // Change this to your Gmail
   
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Just now';
@@ -22,10 +25,12 @@ function ProjectCard({ project, onJoinProject }) {
   };
 
   const isOwnProject = currentUser?.email === project.authorEmail;
+  const isAdmin = currentUser?.email === ADMIN_EMAIL;
   const hasJoinRequest = project.joinRequests?.some(
     request => request.userEmail === currentUser?.email
   );
   const hasPendingRequests = isOwnProject && project.joinRequests && project.joinRequests.length > 0;
+  const canDelete = isOwnProject || isAdmin;
 
   const handleJoinClick = () => {
     if (onJoinProject) {
@@ -34,12 +39,16 @@ function ProjectCard({ project, onJoinProject }) {
   };
 
   const handleDeleteProject = async () => {
-    if (!isOwnProject) return;
+    if (!canDelete) return;
 
-    if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+    const confirmMessage = isAdmin 
+      ? `Are you sure you want to delete this project as an admin?\n\nProject: "${project.title}"\nAuthor: ${project.authorName}\n\nThis action cannot be undone.`
+      : 'Are you sure you want to delete this project? This action cannot be undone.';
+
+    if (window.confirm(confirmMessage)) {
       try {
         await deleteDoc(doc(db, 'projects', project.id));
-        toast.success('Project deleted successfully');
+        toast.success(isAdmin ? 'Project deleted by admin' : 'Project deleted successfully');
       } catch (error) {
         console.error('Error deleting project:', error);
         toast.error('Failed to delete project. Please try again.');
@@ -56,6 +65,14 @@ function ProjectCard({ project, onJoinProject }) {
         </div>
       )}
       
+      {/* Admin badge */}
+      {isAdmin && !isOwnProject && (
+        <div className="absolute -top-2 -left-2 bg-purple-600 text-white text-xs rounded-full px-2 py-1 flex items-center space-x-1">
+          <Shield className="h-3 w-3" />
+          <span>Admin</span>
+        </div>
+      )}
+      
       <div className="flex items-start justify-between mb-4">
         <h3 className="text-xl font-semibold text-gray-900 flex-1 pr-4">
           {project.title}
@@ -65,13 +82,17 @@ function ProjectCard({ project, onJoinProject }) {
             <Clock className="h-4 w-4 mr-1" />
             {formatDate(project.timestamp)}
           </div>
-          {isOwnProject && (
+          {canDelete && (
             <Button
               onClick={handleDeleteProject}
               variant="ghost"
               size="sm"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 p-1"
-              title="Delete project"
+              className={`p-1 ${
+                isAdmin && !isOwnProject 
+                  ? 'text-purple-600 hover:text-purple-700 hover:bg-purple-50' 
+                  : 'text-red-600 hover:text-red-700 hover:bg-red-50'
+              }`}
+              title={isAdmin && !isOwnProject ? "Delete as admin" : "Delete project"}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
